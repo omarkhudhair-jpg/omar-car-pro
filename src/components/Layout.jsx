@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, NavLink } from 'react-router-dom';
 import { useState } from 'react';
 import {
     FiHome,
@@ -54,15 +54,15 @@ const Layout = () => {
             <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
                 <nav className="sidebar-nav">
                     {navItems.map((item) => (
-                        <a
+                        <NavLink
                             key={item.path}
-                            href={item.path}
-                            className="nav-item"
+                            to={item.path}
+                            className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
                             onClick={() => setSidebarOpen(false)}
                         >
                             <item.icon size={20} />
                             <span>{item.label}</span>
-                        </a>
+                        </NavLink>
                     ))}
                 </nav>
             </aside>
@@ -80,10 +80,14 @@ const Layout = () => {
             {/* Bottom Navigation (Mobile) */}
             <nav className="bottom-nav">
                 {navItems.slice(0, 5).map((item) => (
-                    <a key={item.path} href={item.path} className="bottom-nav-item">
+                    <NavLink
+                        key={item.path}
+                        to={item.path}
+                        className={({ isActive }) => `bottom-nav-item ${isActive ? 'active' : ''}`}
+                    >
                         <item.icon size={22} />
                         <span>{item.label}</span>
-                    </a>
+                    </NavLink>
                 ))}
             </nav>
         </div>
