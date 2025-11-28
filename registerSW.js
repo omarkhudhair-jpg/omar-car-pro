@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/omar-car-pro/sw.js', { scope: '/omar-car-pro/' })})}
