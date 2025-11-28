@@ -12,7 +12,7 @@ import './index.css';
 function App() {
   return (
     <LanguageProvider>
-      <BrowserRouter>
+      <BrowserRouter basename="/omar-car-pro">
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Dashboard />} />
