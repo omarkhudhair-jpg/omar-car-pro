@@ -39,7 +39,7 @@ ChartJS.register(
 );
 
 const Dashboard = () => {
-    const { t, language } = useLanguage();
+    const { t, language, formatCurrency, formatDate } = useLanguage();
 
     const [stats, setStats] = useState({
         totalExpenses: 0,
@@ -121,7 +121,7 @@ const Dashboard = () => {
 
                     const eff = dist / current.liters;
                     recentFills.push({
-                        date: new Date(current.date).toLocaleDateString(language === 'ar' ? 'ar-EG' : 'en-US', { month: 'short', day: 'numeric' }),
+                        date: formatDate(current.date),
                         efficiency: eff
                     });
                 }
@@ -291,7 +291,7 @@ const Dashboard = () => {
             ],
         });
 
-    }, [language, t]);
+    }, [language, t, formatCurrency, formatDate]);
 
     const chartOptions = {
         responsive: true,
@@ -386,7 +386,7 @@ const Dashboard = () => {
                     </div>
                     <div className="stat-content">
                         <p className="stat-label">{t('totalExpenses')}</p>
-                        <h2 className="stat-value">${stats.totalExpenses.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</h2>
+                        <h2 className="stat-value">{formatCurrency(stats.totalExpenses)}</h2>
                         <p className="stat-change">
                             {t('lifetimeTotal')}
                         </p>
@@ -412,7 +412,7 @@ const Dashboard = () => {
                     </div>
                     <div className="stat-content">
                         <p className="stat-label">{t('thisMonth')}</p>
-                        <h2 className="stat-value">${stats.monthlyExpenses.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</h2>
+                        <h2 className="stat-value">{formatCurrency(stats.monthlyExpenses)}</h2>
                         <p className="stat-change">
                             {t('currentMonthSpending')}
                         </p>

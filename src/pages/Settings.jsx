@@ -4,7 +4,15 @@ import { useLanguage } from '../context/LanguageContext';
 import './Settings.css';
 
 const Settings = () => {
-    const { language, toggleLanguage, t } = useLanguage();
+    const {
+        language,
+        toggleLanguage,
+        t,
+        currency,
+        updateCurrency,
+        calendarSystem,
+        updateCalendarSystem
+    } = useLanguage();
     const fileInputRef = useRef(null);
 
     const handleExport = () => {
@@ -13,7 +21,9 @@ const Settings = () => {
             maintenanceEntries: JSON.parse(localStorage.getItem('maintenanceEntries') || '[]'),
             expenseEntries: JSON.parse(localStorage.getItem('expenseEntries') || '[]'),
             vehicles: JSON.parse(localStorage.getItem('vehicles') || '[]'),
-            language: localStorage.getItem('language') || 'en'
+            language: localStorage.getItem('language') || 'en',
+            currency: localStorage.getItem('currency') || 'SAR',
+            calendarSystem: localStorage.getItem('calendarSystem') || 'gregorian'
         };
 
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -40,6 +50,8 @@ const Settings = () => {
                 if (data.expenseEntries) localStorage.setItem('expenseEntries', JSON.stringify(data.expenseEntries));
                 if (data.vehicles) localStorage.setItem('vehicles', JSON.stringify(data.vehicles));
                 if (data.language) toggleLanguage(data.language);
+                if (data.currency) updateCurrency(data.currency);
+                if (data.calendarSystem) updateCalendarSystem(data.calendarSystem);
 
                 alert(t('successImport'));
                 window.location.reload(); // Reload to reflect changes
@@ -53,12 +65,17 @@ const Settings = () => {
     const handleClearData = () => {
         if (window.confirm(t('confirmDelete'))) {
             localStorage.clear();
-            // Preserve language setting
+            // Preserve settings
             localStorage.setItem('language', language);
+            localStorage.setItem('currency', currency);
+            localStorage.setItem('calendarSystem', calendarSystem);
+
             alert(t('successClear'));
             window.location.reload();
         }
     };
+
+    const currencies = ['SAR', 'AED', 'KWD', 'QAR', 'BHD', 'OMR', 'USD', 'EUR', 'GBP'];
 
     return (
         <div className="settings-page fade-in">
@@ -70,6 +87,7 @@ const Settings = () => {
             {/* Preferences */}
             <div className="settings-section">
                 <h2>{t('preferences')}</h2>
+
                 <div className="settings-item">
                     <div className="item-info">
                         <h3>{t('language')}</h3>
@@ -89,6 +107,43 @@ const Settings = () => {
                             العربية
                         </button>
                     </div>
+                </div>
+            </div>
+
+            {/* Regional Settings */}
+            <div className="settings-section">
+                <h2>{t('regionalSettings')}</h2>
+
+                <div className="settings-item">
+                    <div className="item-info">
+                        <h3>{t('currency')}</h3>
+                        <p>{currency}</p>
+                    </div>
+                    <select
+                        className="settings-select"
+                        value={currency}
+                        onChange={(e) => updateCurrency(e.target.value)}
+                    >
+                        {currencies.map(curr => (
+                            <option key={curr} value={curr}>{curr}</option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className="settings-item">
+                    <div className="item-info">
+                        <h3>{t('calendarSystem')}</h3>
+                        <p>{t(calendarSystem)}</p>
+                    </div>
+                    <select
+                        className="settings-select"
+                        value={calendarSystem}
+                        onChange={(e) => updateCalendarSystem(e.target.value)}
+                    >
+                        <option value="gregorian">{t('gregorian')}</option>
+                        <option value="hijri">{t('hijri')}</option>
+                        <option value="both">{t('both')}</option>
+                    </select>
                 </div>
             </div>
 

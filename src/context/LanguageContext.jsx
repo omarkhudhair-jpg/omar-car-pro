@@ -6,20 +6,61 @@ export const useLanguage = () => useContext(LanguageContext);
 
 export const LanguageProvider = ({ children }) => {
     const [language, setLanguage] = useState('en');
+    const [currency, setCurrency] = useState('SAR');
+    const [calendarSystem, setCalendarSystem] = useState('gregorian');
 
     useEffect(() => {
         const savedLang = localStorage.getItem('language');
-        if (savedLang) {
-            setLanguage(savedLang);
-        }
+        const savedCurrency = localStorage.getItem('currency');
+        const savedCalendar = localStorage.getItem('calendarSystem');
+
+        if (savedLang) setLanguage(savedLang);
+        if (savedCurrency) setCurrency(savedCurrency);
+        if (savedCalendar) setCalendarSystem(savedCalendar);
     }, []);
 
     const toggleLanguage = (lang) => {
         setLanguage(lang);
         localStorage.setItem('language', lang);
-        // Update document direction for Arabic
         document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
         document.documentElement.lang = lang;
+    };
+
+    const updateCurrency = (curr) => {
+        setCurrency(curr);
+        localStorage.setItem('currency', curr);
+    };
+
+    const updateCalendarSystem = (sys) => {
+        setCalendarSystem(sys);
+        localStorage.setItem('calendarSystem', sys);
+    };
+
+    const formatCurrency = (amount) => {
+        return new Intl.NumberFormat(language === 'ar' ? 'ar-SA' : 'en-US', {
+            style: 'currency',
+            currency: currency,
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2
+        }).format(amount);
+    };
+
+    const formatDate = (dateString) => {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+
+        const gregOptions = { year: 'numeric', month: 'short', day: 'numeric' };
+        const gregDate = new Intl.DateTimeFormat(language === 'ar' ? 'ar-SA' : 'en-US', gregOptions).format(date);
+
+        if (calendarSystem === 'gregorian') return gregDate;
+
+        const hijriOptions = { year: 'numeric', month: 'short', day: 'numeric', calendar: 'islamic-umalqura' };
+        const hijriDate = new Intl.DateTimeFormat(language === 'ar' ? 'ar-SA' : 'en-US-u-ca-islamic-umalqura', hijriOptions).format(date);
+
+        if (calendarSystem === 'hijri') return hijriDate;
+
+        // Both
+        return `${gregDate} | ${hijriDate}`;
     };
 
     const translations = {
@@ -54,6 +95,13 @@ export const LanguageProvider = ({ children }) => {
             successImport: 'Data imported successfully!',
             errorImport: 'Error importing data. Invalid file.',
             successClear: 'All data cleared.',
+            // Regional Settings
+            regionalSettings: 'Regional Settings',
+            currency: 'Currency',
+            calendarSystem: 'Calendar System',
+            gregorian: 'Gregorian',
+            hijri: 'Hijri',
+            both: 'Both',
             // Dashboard specific
             monthlyExpensesTrend: 'Monthly Expenses Trend',
             expenseBreakdown: 'Expense Breakdown',
@@ -133,7 +181,60 @@ export const LanguageProvider = ({ children }) => {
             noVehicles: 'No vehicles added yet',
             addFirstCar: 'Add your first car to start tracking expenses.',
             default: 'Default',
-            plate: 'Plate'
+            plate: 'Plate',
+            or: 'or',
+            // Expense Categories
+            expenseParking: 'Parking',
+            expenseInsurance: 'Insurance',
+            expenseFine: 'Fine',
+            expenseTax: 'Tax',
+            expenseCarWash: 'Car Wash',
+            expenseAccessories: 'Accessories',
+            expenseToll: 'Toll',
+            expenseOther: 'Other',
+            // Maintenance Service Types
+            serviceOilChange: 'Oil Change',
+            serviceTires: 'Tires',
+            serviceBrakes: 'Brakes',
+            serviceBattery: 'Battery',
+            serviceInspection: 'Inspection',
+            serviceRepair: 'Repair',
+            serviceOther: 'Other',
+            // Car Manufacturers
+            makeToyota: 'Toyota',
+            makeHonda: 'Honda',
+            makeFord: 'Ford',
+            makeChevrolet: 'Chevrolet',
+            makeNissan: 'Nissan',
+            makeBMW: 'BMW',
+            makeMercedes: 'Mercedes-Benz',
+            makeAudi: 'Audi',
+            makeHyundai: 'Hyundai',
+            makeKia: 'Kia',
+            makeMazda: 'Mazda',
+            makeVolkswagen: 'Volkswagen',
+            makeSubaru: 'Subaru',
+            makeLexus: 'Lexus',
+            makeJeep: 'Jeep',
+            makeGMC: 'GMC',
+            makeDodge: 'Dodge',
+            makeRam: 'Ram',
+            makeMitsubishi: 'Mitsubishi',
+            makeOther: 'Other',
+            // Car Colors
+            colorWhite: 'White',
+            colorBlack: 'Black',
+            colorSilver: 'Silver',
+            colorGray: 'Gray',
+            colorRed: 'Red',
+            colorBlue: 'Blue',
+            colorGreen: 'Green',
+            colorYellow: 'Yellow',
+            colorOrange: 'Orange',
+            colorBrown: 'Brown',
+            colorGold: 'Gold',
+            colorBeige: 'Beige',
+            colorOther: 'Other'
         },
         ar: {
             dashboard: 'لوحة التحكم',
@@ -166,6 +267,13 @@ export const LanguageProvider = ({ children }) => {
             successImport: 'تم استيراد البيانات بنجاح!',
             errorImport: 'خطأ في استيراد البيانات. ملف غير صالح.',
             successClear: 'تم مسح جميع البيانات.',
+            // Regional Settings
+            regionalSettings: 'الإعدادات الإقليمية',
+            currency: 'العملة',
+            calendarSystem: 'نظام التقويم',
+            gregorian: 'ميلادي',
+            hijri: 'هجري',
+            both: 'كلاهما',
             // Dashboard specific
             monthlyExpensesTrend: 'اتجاه المصاريف الشهرية',
             expenseBreakdown: 'توزيع المصاريف',
@@ -245,7 +353,60 @@ export const LanguageProvider = ({ children }) => {
             noVehicles: 'لم تتم إضافة مركبات بعد',
             addFirstCar: 'أضف سيارتك الأولى لبدء تتبع المصاريف.',
             default: 'افتراضي',
-            plate: 'اللوحة'
+            plate: 'اللوحة',
+            or: 'أو',
+            // Expense Categories
+            expenseParking: 'مواقف',
+            expenseInsurance: 'تأمين',
+            expenseFine: 'مخالفة',
+            expenseTax: 'ضريبة',
+            expenseCarWash: 'غسيل',
+            expenseAccessories: 'إكسسوارات',
+            expenseToll: 'رسوم طريق',
+            expenseOther: 'أخرى',
+            // Maintenance Service Types
+            serviceOilChange: 'تغيير زيت',
+            serviceTires: 'إطارات',
+            serviceBrakes: 'فرامل',
+            serviceBattery: 'بطارية',
+            serviceInspection: 'فحص',
+            serviceRepair: 'إصلاح',
+            serviceOther: 'أخرى',
+            // Car Manufacturers
+            makeToyota: 'تويوتا',
+            makeHonda: 'هوندا',
+            makeFord: 'فورد',
+            makeChevrolet: 'شيفروليه',
+            makeNissan: 'نيسان',
+            makeBMW: 'بي إم دبليو',
+            makeMercedes: 'مرسيدس بنز',
+            makeAudi: 'أودي',
+            makeHyundai: 'هيونداي',
+            makeKia: 'كيا',
+            makeMazda: 'مازدا',
+            makeVolkswagen: 'فولكس فاجن',
+            makeSubaru: 'سوبارو',
+            makeLexus: 'لكزس',
+            makeJeep: 'جيب',
+            makeGMC: 'جي إم سي',
+            makeDodge: 'دودج',
+            makeRam: 'رام',
+            makeMitsubishi: 'ميتسوبيشي',
+            makeOther: 'أخرى',
+            // Car Colors
+            colorWhite: 'أبيض',
+            colorBlack: 'أسود',
+            colorSilver: 'فضي',
+            colorGray: 'رمادي',
+            colorRed: 'أحمر',
+            colorBlue: 'أزرق',
+            colorGreen: 'أخضر',
+            colorYellow: 'أصفر',
+            colorOrange: 'برتقالي',
+            colorBrown: 'بني',
+            colorGold: 'ذهبي',
+            colorBeige: 'بيج',
+            colorOther: 'أخرى'
         }
     };
 
@@ -254,7 +415,17 @@ export const LanguageProvider = ({ children }) => {
     };
 
     return (
-        <LanguageContext.Provider value={{ language, toggleLanguage, t }}>
+        <LanguageContext.Provider value={{
+            language,
+            toggleLanguage,
+            t,
+            currency,
+            updateCurrency,
+            calendarSystem,
+            updateCalendarSystem,
+            formatCurrency,
+            formatDate
+        }}>
             {children}
         </LanguageContext.Provider>
     );

@@ -4,7 +4,7 @@ import { useLanguage } from '../context/LanguageContext';
 import './Fuel.css';
 
 const Fuel = () => {
-    const { t, language } = useLanguage();
+    const { t, language, formatCurrency, formatDate } = useLanguage();
     const [entries, setEntries] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [formData, setFormData] = useState({
@@ -110,7 +110,7 @@ const Fuel = () => {
                     </div>
                     <div className="summary-content">
                         <h3>{t('totalCost')}</h3>
-                        <p>${totalCost.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                        <p>{formatCurrency(totalCost)}</p>
                     </div>
                 </div>
                 <div className="summary-card">
@@ -128,7 +128,7 @@ const Fuel = () => {
                     </div>
                     <div className="summary-content">
                         <h3>{t('avgPrice')}</h3>
-                        <p>${avgPrice} / L</p>
+                        <p>{formatCurrency(avgPrice)} / L</p>
                     </div>
                 </div>
             </div>
@@ -230,12 +230,10 @@ const Fuel = () => {
                     </div>
                 ) : (
                     entries.map(entry => {
-                        const date = new Date(entry.date);
                         return (
                             <div key={entry.id} className="history-item">
                                 <div className="history-date">
-                                    <span className="date-day">{date.getDate()}</span>
-                                    <span className="date-month">{date.toLocaleString(language === 'ar' ? 'ar-EG' : 'default', { month: 'short' })}</span>
+                                    <span className="date-day">{formatDate(entry.date)}</span>
                                 </div>
                                 <div className="history-details">
                                     <span className="history-station">{entry.station || t('unknownStation')}</span>
@@ -252,11 +250,11 @@ const Fuel = () => {
                                     </div>
                                     <div className="stat-group">
                                         <label>{t('price')}</label>
-                                        <span>${entry.pricePerLiter}/L</span>
+                                        <span>{formatCurrency(entry.pricePerLiter)}/L</span>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-md">
-                                    <span className="history-cost">${entry.totalCost.toFixed(2)}</span>
+                                    <span className="history-cost">{formatCurrency(entry.totalCost)}</span>
                                     <button
                                         className="btn btn-icon btn-ghost text-danger"
                                         onClick={() => handleDelete(entry.id)}

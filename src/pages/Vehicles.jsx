@@ -141,7 +141,29 @@ const Vehicles = () => {
                     <form onSubmit={handleSubmit} className="vehicle-form">
                         <div className="form-group">
                             <label>{t('make')}</label>
-                            <input type="text" name="make" placeholder="e.g. Toyota" value={formData.make} onChange={handleInputChange} required />
+                            <select name="make" value={formData.make} onChange={handleInputChange} required>
+                                <option value="">{t('make')}</option>
+                                <option value="makeToyota">{t('makeToyota')}</option>
+                                <option value="makeHonda">{t('makeHonda')}</option>
+                                <option value="makeFord">{t('makeFord')}</option>
+                                <option value="makeChevrolet">{t('makeChevrolet')}</option>
+                                <option value="makeNissan">{t('makeNissan')}</option>
+                                <option value="makeBMW">{t('makeBMW')}</option>
+                                <option value="makeMercedes">{t('makeMercedes')}</option>
+                                <option value="makeAudi">{t('makeAudi')}</option>
+                                <option value="makeHyundai">{t('makeHyundai')}</option>
+                                <option value="makeKia">{t('makeKia')}</option>
+                                <option value="makeMazda">{t('makeMazda')}</option>
+                                <option value="makeVolkswagen">{t('makeVolkswagen')}</option>
+                                <option value="makeSubaru">{t('makeSubaru')}</option>
+                                <option value="makeLexus">{t('makeLexus')}</option>
+                                <option value="makeJeep">{t('makeJeep')}</option>
+                                <option value="makeGMC">{t('makeGMC')}</option>
+                                <option value="makeDodge">{t('makeDodge')}</option>
+                                <option value="makeRam">{t('makeRam')}</option>
+                                <option value="makeMitsubishi">{t('makeMitsubishi')}</option>
+                                <option value="makeOther">{t('makeOther')}</option>
+                            </select>
                         </div>
                         <div className="form-group">
                             <label>{t('model')}</label>
@@ -149,7 +171,12 @@ const Vehicles = () => {
                         </div>
                         <div className="form-group">
                             <label>{t('year')}</label>
-                            <input type="number" name="year" placeholder="e.g. 2022" value={formData.year} onChange={handleInputChange} required />
+                            <select name="year" value={formData.year} onChange={handleInputChange} required>
+                                <option value="">{t('year')}</option>
+                                {Array.from({ length: new Date().getFullYear() - 1989 }, (_, i) => new Date().getFullYear() - i).map(year => (
+                                    <option key={year} value={year}>{year}</option>
+                                ))}
+                            </select>
                         </div>
                         <div className="form-group">
                             <label>{t('licensePlate')}</label>
@@ -157,7 +184,22 @@ const Vehicles = () => {
                         </div>
                         <div className="form-group">
                             <label>{t('color')}</label>
-                            <input type="text" name="color" placeholder="e.g. Silver" value={formData.color} onChange={handleInputChange} />
+                            <select name="color" value={formData.color} onChange={handleInputChange}>
+                                <option value="">{t('color')}</option>
+                                <option value="colorWhite">{t('colorWhite')}</option>
+                                <option value="colorBlack">{t('colorBlack')}</option>
+                                <option value="colorSilver">{t('colorSilver')}</option>
+                                <option value="colorGray">{t('colorGray')}</option>
+                                <option value="colorRed">{t('colorRed')}</option>
+                                <option value="colorBlue">{t('colorBlue')}</option>
+                                <option value="colorGreen">{t('colorGreen')}</option>
+                                <option value="colorYellow">{t('colorYellow')}</option>
+                                <option value="colorOrange">{t('colorOrange')}</option>
+                                <option value="colorBrown">{t('colorBrown')}</option>
+                                <option value="colorGold">{t('colorGold')}</option>
+                                <option value="colorBeige">{t('colorBeige')}</option>
+                                <option value="colorOther">{t('colorOther')}</option>
+                            </select>
                         </div>
                         <div className="form-group">
                             <label>{t('currentOdometer')}</label>
@@ -208,7 +250,7 @@ const Vehicles = () => {
                             <div className="vehicle-content">
                                 <div className="vehicle-title">
                                     <div>
-                                        <h3>{vehicle.make} {vehicle.model}</h3>
+                                        <h3>{vehicle.make ? t(vehicle.make) : vehicle.make} {vehicle.model}</h3>
                                         <span className="vehicle-year">{vehicle.year}</span>
                                     </div>
                                 </div>
@@ -223,7 +265,7 @@ const Vehicles = () => {
                                     </div>
                                     <div className="detail-item">
                                         <label>{t('color')}</label>
-                                        <span>{vehicle.color || 'N/A'}</span>
+                                        <span>{vehicle.color ? t(vehicle.color) : 'N/A'}</span>
                                     </div>
                                 </div>
                                 <div className="vehicle-actions">

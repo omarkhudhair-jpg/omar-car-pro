@@ -4,12 +4,12 @@ import { useLanguage } from '../context/LanguageContext';
 import './Expenses.css';
 
 const Expenses = () => {
-    const { t, language } = useLanguage();
+    const { t, language, formatCurrency, formatDate } = useLanguage();
     const [entries, setEntries] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [formData, setFormData] = useState({
         date: new Date().toISOString().split('T')[0],
-        category: 'Parking',
+        category: 'expenseParking',
         title: '',
         cost: '',
         notes: ''
@@ -44,7 +44,7 @@ const Expenses = () => {
         setShowForm(false);
         setFormData({
             date: new Date().toISOString().split('T')[0],
-            category: 'Parking',
+            category: 'expenseParking',
             title: '',
             cost: '',
             notes: ''
@@ -94,7 +94,7 @@ const Expenses = () => {
                     </div>
                     <div className="summary-content">
                         <h3>{t('totalExpenses')}</h3>
-                        <p>${totalExpenses.toLocaleString()}</p>
+                        <p>{formatCurrency(totalExpenses)}</p>
                     </div>
                 </div>
                 <div className="summary-card">
@@ -103,7 +103,7 @@ const Expenses = () => {
                     </div>
                     <div className="summary-content">
                         <h3>{t('thisMonth')}</h3>
-                        <p>${monthlyExpenses.toLocaleString()}</p>
+                        <p>{formatCurrency(monthlyExpenses)}</p>
                     </div>
                 </div>
             </div>
@@ -115,14 +115,14 @@ const Expenses = () => {
                         <div className="form-group">
                             <label>{t('category')}</label>
                             <select name="category" value={formData.category} onChange={handleInputChange}>
-                                <option>Parking</option>
-                                <option>Insurance</option>
-                                <option>Fine</option>
-                                <option>Tax</option>
-                                <option>Car Wash</option>
-                                <option>Accessories</option>
-                                <option>Toll</option>
-                                <option>Other</option>
+                                <option value="expenseParking">{t('expenseParking')}</option>
+                                <option value="expenseInsurance">{t('expenseInsurance')}</option>
+                                <option value="expenseFine">{t('expenseFine')}</option>
+                                <option value="expenseTax">{t('expenseTax')}</option>
+                                <option value="expenseCarWash">{t('expenseCarWash')}</option>
+                                <option value="expenseAccessories">{t('expenseAccessories')}</option>
+                                <option value="expenseToll">{t('expenseToll')}</option>
+                                <option value="expenseOther">{t('expenseOther')}</option>
                             </select>
                         </div>
                         <div className="form-group">
@@ -164,14 +164,14 @@ const Expenses = () => {
                             <div className="expense-details">
                                 <h3>{entry.title}</h3>
                                 <div className="expense-meta">
-                                    <span>{new Date(entry.date).toLocaleDateString(language === 'ar' ? 'ar-EG' : 'default')}</span>
+                                    <span>{formatDate(entry.date)}</span>
                                     <span>•</span>
-                                    <span className="category-tag">{entry.category}</span>
+                                    <span className="category-tag">{t(entry.category)}</span>
                                 </div>
                                 {entry.notes && <p className="text-muted text-sm mt-sm">{entry.notes}</p>}
                             </div>
                             <div className="expense-cost">
-                                ${entry.cost.toFixed(2)}
+                                {formatCurrency(entry.cost)}
                             </div>
                             <div className="expense-actions">
                                 <button

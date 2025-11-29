@@ -4,12 +4,12 @@ import { useLanguage } from '../context/LanguageContext';
 import './Maintenance.css';
 
 const Maintenance = () => {
-    const { t, language } = useLanguage();
+    const { t, language, formatCurrency, formatDate } = useLanguage();
     const [entries, setEntries] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [formData, setFormData] = useState({
         date: new Date().toISOString().split('T')[0],
-        serviceType: 'Oil Change',
+        serviceType: 'serviceOilChange',
         odometer: '',
         cost: '',
         provider: '',
@@ -48,7 +48,7 @@ const Maintenance = () => {
         setShowForm(false);
         setFormData({
             date: new Date().toISOString().split('T')[0],
-            serviceType: 'Oil Change',
+            serviceType: 'serviceOilChange',
             odometer: '',
             cost: '',
             provider: '',
@@ -66,7 +66,7 @@ const Maintenance = () => {
 
     // Stats
     const totalCost = entries.reduce((sum, entry) => sum + entry.cost, 0);
-    const lastService = entries.length > 0 ? new Date(entries[0].date).toLocaleDateString(language === 'ar' ? 'ar-EG' : 'default') : 'N/A';
+    const lastService = entries.length > 0 ? formatDate(entries[0].date) : 'N/A';
     const upcomingServices = entries.filter(e => e.nextDueDate || e.nextDueOdometer).length;
 
     const getServiceIcon = (type) => {
@@ -107,7 +107,7 @@ const Maintenance = () => {
                     </div>
                     <div className="summary-content">
                         <h3>{t('totalSpent')}</h3>
-                        <p>${totalCost.toLocaleString()}</p>
+                        <p>{formatCurrency(totalCost)}</p>
                     </div>
                 </div>
                 <div className="summary-card">
@@ -137,13 +137,13 @@ const Maintenance = () => {
                         <div className="form-group">
                             <label>{t('serviceType')}</label>
                             <select name="serviceType" value={formData.serviceType} onChange={handleInputChange}>
-                                <option>Oil Change</option>
-                                <option>Tires</option>
-                                <option>Brakes</option>
-                                <option>Battery</option>
-                                <option>Inspection</option>
-                                <option>Repair</option>
-                                <option>Other</option>
+                                <option value="serviceOilChange">{t('serviceOilChange')}</option>
+                                <option value="serviceTires">{t('serviceTires')}</option>
+                                <option value="serviceBrakes">{t('serviceBrakes')}</option>
+                                <option value="serviceBattery">{t('serviceBattery')}</option>
+                                <option value="serviceInspection">{t('serviceInspection')}</option>
+                                <option value="serviceRepair">{t('serviceRepair')}</option>
+                                <option value="serviceOther">{t('serviceOther')}</option>
                             </select>
                         </div>
                         <div className="form-group">
@@ -191,9 +191,9 @@ const Maintenance = () => {
                                 {getServiceIcon(entry.serviceType)}
                             </div>
                             <div className="maintenance-details">
-                                <h3>{entry.serviceType}</h3>
+                                <h3>{t(entry.serviceType)}</h3>
                                 <div className="maintenance-meta">
-                                    <span>{new Date(entry.date).toLocaleDateString(language === 'ar' ? 'ar-EG' : 'default')}</span>
+                                    <span>{formatDate(entry.date)}</span>
                                     <span>•</span>
                                     <span>{entry.odometer.toLocaleString()} km</span>
                                     {entry.provider && (
@@ -206,14 +206,14 @@ const Maintenance = () => {
                                 {(entry.nextDueDate || entry.nextDueOdometer) && (
                                     <div className="next-due-badge">
                                         <FiClock size={12} />
-                                        {t('nextDue')}: {entry.nextDueDate ? new Date(entry.nextDueDate).toLocaleDateString(language === 'ar' ? 'ar-EG' : 'default') : ''}
+                                        {t('nextDue')}: {entry.nextDueDate ? formatDate(entry.nextDueDate) : ''}
                                         {entry.nextDueDate && entry.nextDueOdometer ? ' ' + t('or') + ' ' : ''}
                                         {entry.nextDueOdometer ? `${entry.nextDueOdometer} km` : ''}
                                     </div>
                                 )}
                             </div>
                             <div className="maintenance-cost">
-                                ${entry.cost.toFixed(2)}
+                                {formatCurrency(entry.cost)}
                             </div>
                             <div className="maintenance-actions">
                                 <button
